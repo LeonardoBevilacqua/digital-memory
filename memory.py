@@ -29,9 +29,10 @@ class DigitalMemory:
     def search_notes(self, query: str) -> list[dict]:
         results = []
         query_lower = query.lower()
+        words = query_lower.split()
 
         for path, note in self.notes.items():
-            self.__append_scored_result(results, note, query_lower)
+            self.__append_scored_result(results, note, words)
 
         return sorted(
             results,
@@ -47,10 +48,11 @@ class DigitalMemory:
             for note in self.notes.values()
         ]
 
-    def __calculate_score(self, query_lower: str, content_lower: str) -> int:
+    def __calculate_score(self, words: list[str], content_lower: str) -> int:
         score = 0
-        if query_lower in content_lower:
-            score += content_lower.count(query_lower)
+        for word in words:
+            if word in content_lower:
+                score += content_lower.count(word)
 
         return score
 
@@ -58,11 +60,11 @@ class DigitalMemory:
             self,
             results: list[dict],
             note: dict,
-            query_lower: str
+            words: list[str]
     ):
         content_lower = note[CONTENT].lower()
 
-        score = self.__calculate_score(query_lower, content_lower)
+        score = self.__calculate_score(words, content_lower)
         if score > 0:
             results.append(self.__generate_scored_result(note, score))
 
