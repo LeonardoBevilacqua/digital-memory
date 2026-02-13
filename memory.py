@@ -3,6 +3,7 @@ from pathlib import Path
 
 CONTENT = 'content'
 FILENAME = 'filename'
+FILEPATH = 'filepath'
 SCORE = 'score'
 PREVIEW = 'preview'
 
@@ -16,14 +17,14 @@ class DigitalMemory:
         self.load_notes()
 
     def load_notes(self):
-        md_files = glob(f"{self.notes_path}/*.md")
+        md_files = glob(f"{self.notes_path}/**/*.md", recursive=True)
         for file_path in md_files:
             with open(file_path, 'r', encoding='utf-8') as file:
                 content = file.read()
             self.notes[file_path] = {
                 CONTENT: content,
-                # 'modified': os.path.getmtime(file_path) Check if is required
-                FILENAME: Path(file_path).name
+                FILENAME: Path(file_path).name,
+                FILEPATH: Path(file_path).absolute()
             }
 
     def search_notes(self, query: str) -> list[dict]:
@@ -41,10 +42,13 @@ class DigitalMemory:
 
     def list_notes(self) -> list[dict]:
         return [
-            {FILENAME: note[FILENAME],
-             PREVIEW: note[CONTENT][:100] + '...'
-             if len(note[CONTENT]) > 100 else
-             note[CONTENT]}
+            {
+                FILENAME: note[FILENAME],
+                FILEPATH: note[FILEPATH],
+                PREVIEW: note[CONTENT][:100] + '...'
+                if len(note[CONTENT]) > 100 else
+                note[CONTENT]
+            }
             for note in self.notes.values()
         ]
 

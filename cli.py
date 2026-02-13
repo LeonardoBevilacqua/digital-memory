@@ -1,5 +1,5 @@
 from sys import exit
-from memory import DigitalMemory, FILENAME, PREVIEW
+from memory import DigitalMemory, FILENAME, FILEPATH, PREVIEW
 from ollama_assistant import OllamaMemoryAssistant
 
 OPTION_TITLE = 'option_title'
@@ -32,7 +32,7 @@ def main():
                 return
 
             note_filename = notes[selected_note][FILENAME]
-            note_path = f"{memory.notes_path}/{note_filename}"
+            note_path = notes[selected_note][FILEPATH]
 
             with open(note_path, 'r') as file:
                 print(f"\n--- {note_filename} ---")
