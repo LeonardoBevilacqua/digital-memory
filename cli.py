@@ -1,5 +1,6 @@
 from sys import exit
 from memory import DigitalMemory, FILENAME, PREVIEW
+from ollama_assistant import OllamaMemoryAssistant
 
 OPTION_TITLE = 'option_title'
 OPTION_ACTION = 'option_action'
@@ -40,10 +41,16 @@ def main():
         except ValueError:
             print("Only numbers allowed!")
 
-    # assistant = MemoryAssistant()
+    def ask_assistant():
+        question = input("\nYour question: ")
+        print("\nThinking...")
+        answer = assistant.ask(question)
+        print(f"\nAnswer: {answer}")
+
+    assistant = OllamaMemoryAssistant()
     memory = DigitalMemory()
     options = [
-        {OPTION_TITLE: "Ask a question"},
+        {OPTION_TITLE: "Ask a question", OPTION_ACTION: ask_assistant},
         {OPTION_TITLE: "List all notes", OPTION_ACTION: list_all_notes},
         {OPTION_TITLE: "View a note", OPTION_ACTION: view_note},
         {OPTION_TITLE: "Exit", OPTION_ACTION: clean_up}
